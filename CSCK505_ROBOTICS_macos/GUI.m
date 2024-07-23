@@ -22,108 +22,150 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 16-Jul-2024 23:19:30
+% Last Modified by GUIDE v2.5 23-Jul-2024 04:15:14
 
-% Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
-gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @GUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @GUI_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
-if nargin && ischar(varargin{1})
-    gui_State.gui_Callback = str2func(varargin{1});
+    % Begin initialization code - DO NOT EDIT
+    InitializeGUI(varargin{:});
+    % End initialization code - DO NOT EDIT
 end
 
-if nargout
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
-else
-    gui_mainfcn(gui_State, varargin{:});
-end
-% End initialization code - DO NOT EDIT
+    function InitializeGUI(varargin)
+        gui_Singleton = 1;
+        gui_State = struct('gui_Name',       mfilename, ...
+                           'gui_Singleton',  gui_Singleton, ...
+                           'gui_OpeningFcn', @GUI_OpeningFcn, ...
+                           'gui_OutputFcn',  @GUI_OutputFcn, ...
+                           'gui_LayoutFcn',  [] , ...
+                           'gui_Callback',   []);
+        if nargin && ischar(varargin{1})
+            gui_State.gui_Callback = str2func(varargin{1});
+        end
+    
+        if nargout
+            [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+        else
+            gui_mainfcn(gui_State, varargin{:});
+        end
+    end
+
+    % --- Executes just before GUI is made visible.
+    function GUI_OpeningFcn(hObject, eventdata, handles, varargin)
+        % This function has no output args, see OutputFcn.
+        % hObject    handle to figure
+        % eventdata  reserved - to be defined in a future version of MATLAB
+        % handles    structure with handles and user data (see GUIDATA)
+        % varargin   command line arguments to GUI (see VARARGIN)
+        
+        % Choose default command line output for GUI
+        handles.output = hObject;
+        
+        % Update handles structure
+        guidata(hObject, handles);
+        
+        % UIWAIT makes GUI wait for user response (see UIRESUME)
+        % uiwait(handles.figure1);
+    end
 
 
-% --- Executes just before GUI is made visible.
-function GUI_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to GUI (see VARARGIN)
-
-% Choose default command line output for GUI
-handles.output = hObject;
-
-% Update handles structure
-guidata(hObject, handles);
-
-% UIWAIT makes GUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+    % --- Outputs from this function are returned to the command line.
+    function varargout = GUI_OutputFcn(hObject, eventdata, handles) 
+        % varargout  cell array for returning output args (see VARARGOUT);
+        % hObject    handle to figure
+        % eventdata  reserved - to be defined in a future version of MATLAB
+        % handles    structure with handles and user data (see GUIDATA)
+        
+        % Get default command line output from handles structure
+        varargout{1} = handles.output;
+    end
 
 
-% --- Outputs from this function are returned to the command line.
-function varargout = GUI_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+    % --- Executes on button press in pushbutton_forward.
+    function pushbutton_forward_Callback(hObject, eventdata, handles)
+        % hObject    handle to pushbutton_forward (see GCBO)
+        % eventdata  reserved - to be defined in a future version of MATLAB
+        % handles    structure with handles and user data (see GUIDATA)
 
-% Get default command line output from handles structure
-varargout{1} = handles.output;
+        global motorLeftHandle motorRightHandle simClient
+        simClient.setJointTargetVelocity(motorLeftHandle, 2); % Set speed as required
+        simClient.setJointTargetVelocity(motorRightHandle, 2);
+    end
+
+    % --- Executes on button press in pushbutton_reverse.
+    function pushbutton_reverse_Callback(hObject, eventdata, handles)
+        % hObject    handle to pushbutton_reverse (see GCBO)
+        % eventdata  reserved - to be defined in a future version of MATLAB
+        % handles    structure with handles and user data (see GUIDATA)
+
+        global motorLeftHandle motorRightHandle simClient
+        simClient.setJointTargetVelocity(motorLeftHandle, -2); % Set speed as required
+        simClient.setJointTargetVelocity(motorRightHandle, -2);
+    end
+
+    % --- Executes on button press in pushbutton_stop.
+    function pushbutton_stop_Callback(hObject, eventdata, handles)
+        % hObject    handle to pushbutton_stop (see GCBO)
+        % eventdata  reserved - to be defined in a future version of MATLAB
+        % handles    structure with handles and user data (see GUIDATA)
+
+        global motorLeftHandle motorRightHandle simClient
+        simClient.setJointTargetVelocity(motorLeftHandle, 0);
+        simClient.setJointTargetVelocity(motorRightHandle, 0);
+    end
+
+    % --- Executes on button press in pushbutton_right.
+    function pushbutton_right_Callback(hObject, eventdata, handles)
+        % hObject    handle to pushbutton_right (see GCBO)
+        % eventdata  reserved - to be defined in a future version of MATLAB
+        % handles    structure with handles and user data (see GUIDATA)
+
+        global motorLeftHandle motorRightHandle simClient
+        simClient.setJointTargetVelocity(motorLeftHandle, 2); % Set speed as required
+        simClient.setJointTargetVelocity(motorRightHandle, -2);
+    end
+
+    % --- Executes on button press in pushbutton_left.
+    function pushbutton_left_Callback(hObject, eventdata, handles)
+        % hObject    handle to pushbutton_left (see GCBO)
+        % eventdata  reserved - to be defined in a future version of MATLAB
+        % handles    structure with handles and user data (see GUIDATA)
+
+        global motorLeftHandle motorRightHandle simClient
+        simClient.setJointTargetVelocity(motorLeftHandle, -2); % Set speed as required
+        simClient.setJointTargetVelocity(motorRightHandle, 2);
+    end
 
 
-% --- Executes on button press in pushbutton_forward.
-function pushbutton_forward_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_forward (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-    global motorLeftHandle motorRightHandle simClient
-    simClient.setJointTargetVelocity(motorLeftHandle, 2); % Set speed as required
-    simClient.setJointTargetVelocity(motorRightHandle, 2);
-
-% --- Executes on button press in pushbutton_reverse.
-function pushbutton_reverse_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_reverse (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-    global motorLeftHandle motorRightHandle simClient
-    simClient.setJointTargetVelocity(motorLeftHandle, -2); % Set speed as required
-    simClient.setJointTargetVelocity(motorRightHandle, -2);
-
-% --- Executes on button press in pushbutton_stop.
-function pushbutton_stop_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_stop (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-    global motorLeftHandle motorRightHandle simClient
-    simClient.setJointTargetVelocity(motorLeftHandle, 0);
-    simClient.setJointTargetVelocity(motorRightHandle, 0);
-
-% --- Executes on button press in pushbutton_right.
-function pushbutton_right_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_right (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-    global motorLeftHandle motorRightHandle simClient
-    simClient.setJointTargetVelocity(motorLeftHandle, 2); % Set speed as required
-    simClient.setJointTargetVelocity(motorRightHandle, -2);
-
-% --- Executes on button press in pushbutton_left.
-function pushbutton_left_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_left (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-    global motorLeftHandle motorRightHandle simClient
-    simClient.setJointTargetVelocity(motorLeftHandle, -2); % Set speed as required
-    simClient.setJointTargetVelocity(motorRightHandle, 2);
+    % --- Executes on button press in pushbutton_connect_create.
+    function pushbutton_connect_create_Callback(hObject, eventdata, handles)
+    % hObject    handle to pushbutton_connect_create (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+        % Call the function Connect_CreateWall
+        Connect_CreateWall();
+    end
 
 
-% --- Executes on button press in pushbutton_connect_create.
-function pushbutton_connect_create_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_connect_create (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+    % --- Executes on button press in pushbutton_get_occupancy.
+    function pushbutton_get_occupancy_Callback(hObject, eventdata, handles)
+    % hObject    handle to pushbutton_get_occupancy (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+        % Global variables for grid and simulation client
+        global occupancyGrid gridSize cellSize simClient laserScannerHandle
+    
+        % Initialize the occupancy grid if not already done
+        if isempty(occupancyGrid)
+            gridSize = [100, 100];
+            cellSize = 0.1;
+            occupancyGrid = 0.5 * ones(gridSize); % Initialize grid to unknown
+        end
 
-    % Call the function Connect_CreateWall
-    Connect_CreateWall();
+        % Update the occupancy grid using the external function
+        occupancyGrid = UpdateOccupancyGrid(simClient, laserScannerHandle, occupancyGrid, gridSize, cellSize);
+
+        % Visualize the occupancy grid using the external function
+        VisualizeOccupancyGrid(occupancyGrid, handles);
+    
+    end

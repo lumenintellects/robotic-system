@@ -8,7 +8,7 @@ function Connect_CreateWall()
     sim = client.getObject('sim');
 
     % Global variables to store motor handles and client
-    global motorLeftHandle motorRightHandle simClient
+    global motorLeftHandle motorRightHandle simClient laserScannerHandle
 
     % Define paths to models (ensure these paths are correct)
     woodenFloorModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/infrastructure/floors/5mX5m wooden floor.ttm';
@@ -93,6 +93,8 @@ function Connect_CreateWall()
         % Set the parent of the laser scanner to the robot
         sim.setObjectParent(laserScannerHandle, robotHandle, true);
 
+        sim.addLog(sim.verbosity_loadinfos, laserScannerHandle);
+
         % Adjust the position and orientation of the laser scanner on the robot
         sim.setObjectPosition(laserScannerHandle, robotHandle, [0, 0, 0.15]);
         sim.setObjectOrientation(laserScannerHandle, robotHandle, [0, 0, -pi/2]);
@@ -116,6 +118,8 @@ function Connect_CreateWall()
     % Get handles for the robot's motors
     motorLeftHandle = sim.getObject('./leftMotor');
     motorRightHandle = sim.getObject('./rightMotor');
+    sim.addLog(sim.verbosity_loadinfos, sim.getObjects(0, sim.handle_all));
+    
 
     % Store the client globally
     simClient = sim;
