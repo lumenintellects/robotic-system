@@ -1,0 +1,40 @@
+
+% Initialise the zmqRemoteApi MATLAB client
+addpath('/Users/ahmedelsenousi/Downloads/coppeliaSim.app/Contents/Resources/programming/zmqRemoteApi/clients/matlab');
+client = RemoteAPIClient();
+
+% Initialize without parameters
+sim = client.getObject('sim');
+
+% gridSize = [100, 100]; % 100x100 grid cells
+% gridResolution = 0.1; % each cell represents a 0.1m x 0.1m area
+% occupancyGrid = zeros(gridSize); % Initialize the grid with zeros (free space)
+% 
+% imagesc(occupancyGrid);
+% axis equal;
+% title('Occupancy Grid');
+% xlabel('X (grid cells)');
+% ylabel('Y (grid cells)');
+% colorbar;
+
+% Example function to convert world coordinates to grid coordinates
+function [row, col] = worldToGrid(x, y, gridResolution, gridSize)
+    col = min(max(round(x / gridResolution) + gridSize(2) / 2, 1), gridSize(2));
+    row = min(max(round(y / gridResolution) + gridSize(1) / 2, 1), gridSize(1));
+end
+
+
+robo=sim.getObject('/PioneerP3DX')
+front_Sensor = sim.getObjectHandle('Pioneer_p3dx_ultrasonicSensor5')
+for i=1:200
+   % result=sim.readProximitySensor(front_Sensor)
+    % if result > 1 then
+    % 
+    %     [row, col] = worldToGrid(x, y, gridResolution, gridSize);
+    %     occupancyGrid(row, col) = 1; % Mark the cell as occupied
+    % end
+   p=sim.getObjectPosition(robo)
+   disp(p(1,))
+   % disp(result);
+   pause(0.1);
+end
