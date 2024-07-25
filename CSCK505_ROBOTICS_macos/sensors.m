@@ -6,7 +6,7 @@ client = RemoteAPIClient();
 % Initialize without parameters
 sim = client.getObject('sim');
 
- gridSize = [50, 100]; % 100x100 grid cells
+ gridSize = [50, 100]; % 50x100 grid cells
  gridResolution = 0.1; % each cell represents a 0.1m x 0.1m area
  occupancyGrid = zeros(gridSize); % Initialize the grid with zeros (free space)
  
@@ -17,6 +17,11 @@ function [row, col] = worldToGrid(x, y, gridResolution, gridSize)
     row = min(max(round(y / gridResolution) + gridSize(1) / 2, 1), gridSize(1));
 end
 
+axis equal;
+title('Occupancy Grid');
+xlabel('X (grid cells)');
+ylabel('Y (grid cells)');
+colorbar;
 
 robo=sim.getObject('/PioneerP3DX');
 front_Sensor = sim.getObjectHandle('Pioneer_p3dx_ultrasonicSensor5');
@@ -31,11 +36,7 @@ for i=1:300
    end
    
    pause(0.1);
+   imagesc(occupancyGrid);
+
 end
 
-imagesc(occupancyGrid);
-axis equal;
-title('Occupancy Grid');
-xlabel('X (grid cells)');
-ylabel('Y (grid cells)');
-colorbar;
