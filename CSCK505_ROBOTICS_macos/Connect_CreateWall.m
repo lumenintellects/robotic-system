@@ -19,12 +19,12 @@ function Connect_CreateWall()
     laserScannerModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/components/sensors/2D laser scanner.ttm'; % Path to 2D laser scanner model
 
     % Explicitly remove specific objects by name
-    objectsToRemove = {'Floor'}; % Add any other specific objects you want to remove
+    objectsToRemove = {'/Floor/box'}; % Add any other specific objects you want to remove
 
-    for i = 1: length(objectsToRemove)
+    for i = 1:length(objectsToRemove)
         try
             objectHandle = sim.getObject(objectsToRemove{i});
-            if ~isempty(objectHandle)
+            if objectHandle ~= -1 % Check if the object exists
                 sim.removeObject(objectHandle);
                 pause(0.1); % Add a short delay to ensure the object is removed
             end
@@ -105,7 +105,11 @@ function Connect_CreateWall()
         % Get the child script associated with the robot
         scriptHandle = sim.getScript(sim.scripttype_childscript, robotHandle);
         if scriptHandle ~= -1
-            sim.removeScript(scriptHandle);
+            try
+                sim.removeScript(scriptHandle);
+            catch ME
+                warning('Could not remove script: %s', ME.message);
+            end
         end
     end
 
