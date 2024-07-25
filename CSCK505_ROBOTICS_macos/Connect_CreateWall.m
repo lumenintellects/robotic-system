@@ -16,6 +16,7 @@ function Connect_CreateWall()
     tableModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/furniture/tables/diningTable.ttm';
     plantModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/furniture/plants/indoorPlant.ttm';
     robotModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/robots/mobile/pioneer p3dx.ttm';%change robot if required?
+    robotName = '/PioneerP3DX'
     laserScannerModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/components/sensors/2D laser scanner.ttm'; % Path to 2D laser scanner model
 
     % Explicitly remove specific objects by name
@@ -101,27 +102,27 @@ function Connect_CreateWall()
     end
 
     % Function to remove Lua scripts from a robot
-    function removeLuaScripts(sim, robotHandle)
-        % Get the child script associated with the robot
-        scriptHandle = sim.getScript(sim.scripttype_childscript, robotHandle);
-        if scriptHandle ~= -1
-            try
-                sim.removeScript(scriptHandle);
-            catch ME
-                warning('Could not remove script: %s', ME.message);
-            end
-        end
+    function removeLuaScripts(sim, robotName)
+        objectPath = strcat(robotName, '/Script');
+        scriptHandle = sim.getObject(objectPath);
+        
+        % Remove the script
+        sim.removeObject(scriptHandle);
+        
+        disp('All scripts removed from %s components.', robotName);
     end
 
     % Place the robot in the environment
     robotHandle = placeObject(sim, robotModelPath, [0, 0, 0.22], [0, 0, 0]);
 
     % Remove Lua scripts from the robot
-    removeLuaScripts(sim, robotHandle);
+    removeLuaScripts(sim, robotName);
 
     % Get handles for the robot's motors
-    motorLeftHandle = sim.getObject('./leftMotor');
-    motorRightHandle = sim.getObject('./rightMotor');
+    motorLeftPath = strcat(robotName, '/leftMotor')
+    motorLeftHandle = sim.getObject(motorLeftPath);
+    motorRightPath = strcat(robotName, '/rightMotor')
+    motorRightHandle = sim.getObject(motorRightPath);
     sim.addLog(sim.verbosity_loadinfos, sim.getObjects(0, sim.handle_all));
     
 
@@ -132,4 +133,5 @@ function Connect_CreateWall()
     addLaserScanner(sim, robotHandle, laserScannerModelPath);
 
     disp('Environment created in CoppeliaSim. You can now interact with it in the CoppeliaSim window.');
+
 end
