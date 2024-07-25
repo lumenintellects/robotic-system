@@ -109,7 +109,7 @@ function Connect_CreateWall()
         % Remove the script
         sim.removeObject(scriptHandle);
         
-        disp('All scripts removed from %s components.', robotName);
+        fprintf('All scripts removed from %s components.\n', robotName);
     end
 
     % Place the robot in the environment
