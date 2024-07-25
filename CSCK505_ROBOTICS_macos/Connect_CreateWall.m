@@ -1,5 +1,4 @@
 function Connect_CreateWall()
-    
     % Initialise the zmqRemoteApi MATLAB client
     addpath('/Applications/coppeliaSim.app/Contents/Resources/programming/zmqRemoteApi/clients/matlab');
     client = RemoteAPIClient();
@@ -15,7 +14,7 @@ function Connect_CreateWall()
     chairModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/furniture/chairs/dining chair.ttm';
     tableModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/furniture/tables/diningTable.ttm';
     plantModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/furniture/plants/indoorPlant.ttm';
-    robotModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/robots/mobile/pioneer p3dx.ttm';%change robot if required?
+    robotModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/robots/mobile/pioneer p3dx.ttm'; %change robot if required?
     robotName = '/PioneerP3DX'
     laserScannerModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/components/sensors/2D laser scanner.ttm'; % Path to 2D laser scanner model
 
@@ -62,6 +61,10 @@ function Connect_CreateWall()
         [wallHandle] = sim.createPrimitiveShape(sim.primitiveshape_cuboid, [length, wallThickness, wallHeight], 1);
         sim.setObjectPosition(wallHandle, -1, [midPoint(1), midPoint(2), wallHeight / 2]);
         sim.setObjectOrientation(wallHandle, -1, [0, 0, angle]);
+
+        % Enable collision for the wall
+        sim.setObjectInt32Parameter(wallHandle, sim.shapeintparam_respondable, 1);
+        sim.setObjectSpecialProperty(wallHandle, sim.objectspecialproperty_collidable);
     end
 
     % Create walls based on the new image
@@ -119,9 +122,9 @@ function Connect_CreateWall()
     removeLuaScripts(sim, robotName);
 
     % Get handles for the robot's motors
-    motorLeftPath = strcat(robotName, '/leftMotor')
+    motorLeftPath = strcat(robotName, '/leftMotor');
     motorLeftHandle = sim.getObject(motorLeftPath);
-    motorRightPath = strcat(robotName, '/rightMotor')
+    motorRightPath = strcat(robotName, '/rightMotor');
     motorRightHandle = sim.getObject(motorRightPath);
     sim.addLog(sim.verbosity_loadinfos, sim.getObjects(0, sim.handle_all));
     
@@ -132,6 +135,9 @@ function Connect_CreateWall()
     % Add a laser scanner to the robot
     addLaserScanner(sim, robotHandle, laserScannerModelPath);
 
-    disp('Environment created in CoppeliaSim. You can now interact with it in the CoppeliaSim window.');
+    % Enable robot collision properties
+    sim.setObjectInt32Parameter(robotHandle, sim.shapeintparam_respondable, 1);
+    sim.setObjectSpecialProperty(robotHandle, sim.objectspecialproperty_collidable);
 
+    disp('Environment created in CoppeliaSim. You can now interact with it in the CoppeliaSim window.');
 end
