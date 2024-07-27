@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 25-Jul-2024 17:48:32
+% Last Modified by GUIDE v2.5 27-Jul-2024 16:32:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -143,6 +143,3 @@ function pushbutton_start_streaming_Callback(hObject, eventdata, handles)
 function pushbutton_stop_streaming_Callback(hObject, eventdata, handles)
     global streamingFlag;
     streamingFlag = false;
-
-
-

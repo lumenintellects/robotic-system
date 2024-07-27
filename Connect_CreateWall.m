@@ -16,8 +16,7 @@ function Connect_CreateWall
     plantModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\plants\indoorPlant.ttm';
     robotModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\mobile\pioneer p3dx.ttm';%change robot if required?
     laserScannerModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\components\sensors\Hokuyo URG 04LX UG01.ttm'; % Path to 2D laser scanner model
-    laserScannerScriptPath = 'C:\Users\tayla\Documents\MATLAB\CSCK505_ROBOTICS2\laserscannerlua.txt'
-
+    laserScannerScriptPath = 'C:\Users\tayla\Documents\MATLAB\CSCK505_ROBOTICS2\TestOcc\HokuyaScript.txt';
 
     % Explicitly remove specific objects by name
     objectsToRemove = {'Floor'}; % Add any other specific objects you want to remove
@@ -99,34 +98,32 @@ function Connect_CreateWall
         sim.setObjectOrientation(laserScannerHandle, robotHandle, [0, 0, 0]);
     end
 
-
-    % Lua script in folder called laserscannerlua.txt
-    function addLaserScannerScript(sim, robotHandle, folderPath)        
-        % Get the handle of the laser scanner child object
-        laserScannerHandle = sim.getObjectHandle('./LaserScanner2D', robotHandle);
-    
+    function addLaserScannerScript(sim, laserScannerScriptPath)
         % Read the Lua script from the file
-        fid = fopen(folderPath, 'r');
+        fid = fopen(laserScannerScriptPath, 'r');
         if fid == -1
-            error('Could not open Lua script file: %s', folderPath);
+            error('Could not open Lua script file: %s', laserScannerScriptPath);
         end
         luaScript = fread(fid, '*char')';
         fclose(fid);
-        
-        % Add the new Lua script to the laser scanner
-        scriptHandle = sim.addScript(sim.scripttype_childscript);
-        sim.setScriptText(scriptHandle, luaScript);
-        
-        % Check if the laser scanner is already associated with a script of this type
+    
+        % Get the handle of the laser scanner child object
+        laserScannerHandle = sim.getObject('./Hokuyo');
+    
+        % Check if the laser scanner is already associated with a child script
         existingScriptHandle = sim.getScript(sim.scripttype_childscript, laserScannerHandle);
         if existingScriptHandle == -1
-            % Associate the new script with the laser scanner if not already associated
+            % Add the new Lua script to the laser scanner
+            scriptHandle = sim.addScript(sim.scripttype_childscript);
+            sim.setScriptText(scriptHandle, luaScript);
+    
+            % Associate the new script with the laser scanner
             sim.associateScriptWithObject(scriptHandle, laserScannerHandle);
-            disp("Script added to LaserScanner2D");
+            disp('Lua script added to the laser scanner');
         else
-            % Update the existing script's text if already associated
+            % Update the existing script's text
             sim.setScriptText(existingScriptHandle, luaScript);
-            disp('Existing Lua script updated on LaserScanner2D');
+            disp('Existing Lua script updated on the laser scanner');
         end
     end
 
@@ -145,7 +142,8 @@ function Connect_CreateWall
     % Add a laser scanner to the robot
     addLaserScanner(sim, robotHandle, laserScannerModelPath);
     
-    %addLaserScannerScript(sim, robotHandle, laserScannerScriptPath)
+											 
+    addLaserScannerScript(sim, laserScannerScriptPath)
+
     disp('Environment created in CoppeliaSim. You can now interact with it in the CoppeliaSim window.');
 end
-
