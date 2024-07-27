@@ -27,6 +27,9 @@ l_occ = log(p_occ / (1 - p_occ));
 l_free = log(p_free / (1 - p_free));
 l_prior = log(0.5 / (1 - 0.5));
 
+%start simulations
+sim.startSimulation();
+
 % Fetch and process laser data in a loop (or single call for testing)
 figure;
 while true
