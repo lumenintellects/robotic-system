@@ -84,3 +84,7 @@ function sysCall_sensing()
     for i = 1, #measuredData, 2 do
         sim.addStatusbarMessage(string.format("Measured Data Point %d: (Joint: %f, %f)", (i+1)/2, measuredData[i], measuredData[i+1]))
     end
+    
+    -- Send data to MATLAB via signal
+    sim.setStringSignal('laserData', sim.packFloatTable(measuredData))
+end
