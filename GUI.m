@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 27-Jul-2024 16:32:23
+% Last Modified by GUIDE v2.5 28-Jul-2024 13:22:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -143,3 +143,17 @@ function pushbutton_start_streaming_Callback(hObject, eventdata, handles)
 function pushbutton_stop_streaming_Callback(hObject, eventdata, handles)
     global streamingFlag;
     streamingFlag = false;
+
+
+% --- Executes on button press in pushbutton_exploration_auto.
+function pushbutton_exploration_auto_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_exploration_auto (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    main()
+
+% --- Executes on button press in pushbutton_exploration_manual.
+function pushbutton_exploration_manual_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_exploration_manual (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
