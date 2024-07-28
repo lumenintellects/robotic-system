@@ -17,7 +17,6 @@ function Connect_CreateWall
     cuboidHandle1 = sim.createPrimitiveShape(sim.primitiveshape_cuboid, cuboidSize, 0);
     cuboidHandle2 = sim.createPrimitiveShape(sim.primitiveshape_cuboid, cuboidSize, 0);
     cuboidHandle3 = sim.createPrimitiveShape(sim.primitiveshape_cuboid, cuboidSize, 0);
-    cuboidHandle4 = sim.createPrimitiveShape(sim.primitiveshape_cuboid, cuboidSize, 0);
 
 
     % Define paths to models (ensure these paths are correct)
@@ -84,12 +83,11 @@ function Connect_CreateWall
     createWall(sim, [0, 1.5], [1.5, 1.5], wallThickness, wallHeight); % Horizontal right
     createWall(sim, [3.5, 2.5], [3.5, 1.5], wallThickness, wallHeight); % Short vertical top-right
 
-    sim.setObjectPosition(cuboidHandle1, -1, [4, -0.5, 0.4]);
-    sim.setObjectPosition(sphereHandle1, -1, [3, -1.5, 0.4]);
-    sim.setObjectPosition(cuboidHandle2, -1, [-0.5, 1, 0.2]);
+    sim.setObjectPosition(sphereHandle1, -1, [2, 0, 0.4]);
+    sim.setObjectPosition(cuboidHandle1, -1, [-0.5, 1, 0.2]);
     sim.setObjectPosition(sphereHandle2, -1, [-4.5, 2, 0.2]);
-    sim.setObjectPosition(cuboidHandle3, -1, [-4.5, -2, 0.2]);
-    sim.setObjectPosition(cuboidHandle4, -1, [0.5, 1, 0.2]);
+    sim.setObjectPosition(cuboidHandle2, -1, [-4.5, -2, 0.2]);
+    sim.setObjectPosition(cuboidHandle3, -1, [0.5, 1, 0.2]);
 
     % Function to add a laser scanner to a robot
     function addLaserScanner(sim, robotHandle, laserScannerModelPath)
