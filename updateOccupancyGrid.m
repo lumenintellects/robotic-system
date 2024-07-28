@@ -4,26 +4,21 @@ function logOddsGrid = updateOccupancyGrid(logOddsGrid, laserData, robotPosition
     robotY = robotPosition(2);
     robotTheta = robotOrientation(3); % Assuming yaw is the third component
 
-    % Coverage angle (240 degrees) in radians
-    coverageAngle = 240 * pi / 180;
-    halfCoverageAngle = coverageAngle / 2;
-
     % Number of laser data points
-    numPoints = length(laserData) / 3;
+    numPoints = length(laserData) / 2;
 
     % Process laser data
     for i = 1:numPoints
-        % Calculate the angle of the laser measurement
-        angle = (i / numPoints) * coverageAngle - halfCoverageAngle;
-        
-        % Transform laser data into local coordinates
-        x = laserData(3 * i - 2);
-        y = laserData(3 * i - 1);
-        z = laserData(3 * i);
+        % Extract joint position and distance
+        jointPos = laserData(2 * i - 1);
+        distance = laserData(2 * i);
 
-        % Rotate local coordinates to align with robot's orientation
-        globalX = robotX + x * cos(angle + robotTheta) - y * sin(angle + robotTheta);
-        globalY = robotY + x * sin(angle + robotTheta) + y * cos(angle + robotTheta);
+        % Calculate the angle of the laser measurement relative to the robot
+        angle = jointPos + robotTheta;  % Using the joint position directly since it already covers -45 to 45 degrees
+
+        % Calculate the global coordinates of the detected point
+        globalX = robotX + distance * cos(angle);
+        globalY = robotY + distance * sin(angle);
 
         % Calculate cell indices
         if globalX >= xMin && globalX <= xMax && globalY >= yMin && globalY <= yMax
@@ -40,7 +35,7 @@ function logOddsGrid = updateOccupancyGrid(logOddsGrid, laserData, robotPosition
                 freeY = robotY + d * (globalY - robotY) / beamLength;
                 freeXIdx = round((freeX - xMin) / resolution) + 1;
                 freeYIdx = round((freeY - yMin) / resolution) + 1;
-                if freeXIdx >= 1 && freeXIdx <= length(logOddsGrid(1,:)) && freeYIdx >= 1 && freeYIdx <= length(logOddsGrid(:,1))
+                if freeXIdx >= 1 && freeXIdx <= size(logOddsGrid, 2) && freeYIdx >= 1 && freeYIdx <= size(logOddsGrid, 1)
                     logOddsGrid(freeYIdx, freeXIdx) = logOddsGrid(freeYIdx, freeXIdx) + l_free - l_prior;
                 end
             end

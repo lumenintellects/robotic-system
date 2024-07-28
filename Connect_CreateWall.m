@@ -16,7 +16,7 @@ function Connect_CreateWall
     plantModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\plants\indoorPlant.ttm';
     robotModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\mobile\pioneer p3dx.ttm';%change robot if required?
     laserScannerModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\components\sensors\Hokuyo URG 04LX UG01.ttm'; % Path to 2D laser scanner model
-    laserScannerScriptPath = 'C:\Users\tayla\Documents\MATLAB\CSCK505_ROBOTICS2\TestOcc\HokuyaScript.txt';
+    laserScannerScriptPath = 'C:\Users\tayla\Documents\MATLAB\CSCK505_ROBOTICS2\TestOcc\robotic-system-1\robotic-system\HokuyaScript.txt';
 
     % Explicitly remove specific objects by name
     objectsToRemove = {'Floor'}; % Add any other specific objects you want to remove

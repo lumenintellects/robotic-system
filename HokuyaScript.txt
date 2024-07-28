@@ -5,20 +5,22 @@ function sysCall_init()
     generateData=true
     discardMaxDistPts=true
     fullScanPerSimulationPass=false -- Non-realistic scanning (instantaneous scan)
-    scanningAngle=240*math.pi/180
+    scanningAngle=90*math.pi/180
     rotationalVelocity=2*math.pi*10
-    stepSize=2*math.pi/1024
-    pts=684-- for one scan pass
+    stepSize=2*math.pi/64
+    pts=32-- for one scan pass
 
     self=sim.getObject('.')
-    laserHandle=sim.getObject("./laser")
-    jointHandle=sim.getObject("./joint")
+    laserHandle=sim.getObject("../laser")
+    jointHandle=sim.getObject("../joint")
 
     red={1,0,0}
     lines=sim.addDrawingObject(sim.drawing_lines,1,0,-1,1000,red)
 
     maxScanDistance=6
-    previousDAngleRest=0
+
+    -- Initialize previousDAngleRest here
+    previousDAngleRest = 0
 end
 
 function sysCall_cleanup() 
@@ -29,6 +31,7 @@ function sysCall_sensing()
     local measuredData={}
 
     local dt=sim.getSimulationTimeStep()
+    local dAngle
     if fullScanPerSimulationPass then
         dAngle=math.pi*2 
     else
@@ -62,27 +65,22 @@ function sysCall_sensing()
                 pt={0,0,maxScanDistance}
             end
             if generateData and (dist or not discardMaxDistPts) then
-                if rangeData then
-                    table.insert(measuredData,pt[3])
-                else
-                    local p=sim.multiplyVector(relRefM,pt)
-                    table.insert(measuredData,p[1])
-                    table.insert(measuredData,p[2])
-                    table.insert(measuredData,p[3])
-                end
+                table.insert(measuredData, jointPos) -- joint position
+                table.insert(measuredData, pt[3])    -- hypotenuse distance (distance from sensor to the point)
             end
             if showLines then
-                p=sim.multiplyVector(sensorM,pt)
+                p=sim.multiplyVector(sensorM, pt)
                 t[4]=p[1]
                 t[5]=p[2]
                 t[6]=p[3]
-                sim.addDrawingObjectItem(lines,t)
+                sim.addDrawingObjectItem(lines, t)
             end
         end
     end
     
     previousDAngleRest=angle-dAngle
     
-    -- Send data to MATLAB via signal
-    sim.setStringSignal('laserData', sim.packFloatTable(measuredData))
-end
+    -- Debug: Print the measured data
+    for i = 1, #measuredData, 2 do
+        sim.addStatusbarMessage(string.format("Measured Data Point %d: (Joint: %f, %f)", (i+1)/2, measuredData[i], measuredData[i+1]))
+    end

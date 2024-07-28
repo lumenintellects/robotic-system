@@ -7,9 +7,9 @@ function [position, orientation] = getRobotPose(sim)
     position = cellfun(@(x) double(x), position, 'UniformOutput', true);
     orientation = cellfun(@(x) double(x), orientation, 'UniformOutput', true);
 
-    % Debug prints
-    disp('Robot Position:');
-    disp(position);
-    disp('Robot Orientation:');
-    disp(orientation);
+    %Debug prints
+    %disp('Robot Position:');
+    %disp(position);
+    %disp('Robot Orientation:');
+    %disp(orientation);
 end
