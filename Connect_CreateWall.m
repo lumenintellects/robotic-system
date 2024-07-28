@@ -9,11 +9,19 @@ function Connect_CreateWall
     % Global variables to store motor handles and client
     global motorLeftHandle motorRightHandle simClient isStreaming
 
+    sphereSize = 0.6; % Radius of the sphere
+    cuboidSize = [0.5, 0.6, 0.4]; % Dimensions of the cuboid [length, width, height]
+
+    sphereHandle1 = sim.createPrimitiveShape(sim.primitiveshape_spheroid, [sphereSize sphereSize sphereSize], 0);
+    sphereHandle2 = sim.createPrimitiveShape(sim.primitiveshape_spheroid, [sphereSize sphereSize sphereSize], 0);
+    cuboidHandle1 = sim.createPrimitiveShape(sim.primitiveshape_cuboid, cuboidSize, 0);
+    cuboidHandle2 = sim.createPrimitiveShape(sim.primitiveshape_cuboid, cuboidSize, 0);
+    cuboidHandle3 = sim.createPrimitiveShape(sim.primitiveshape_cuboid, cuboidSize, 0);
+    cuboidHandle4 = sim.createPrimitiveShape(sim.primitiveshape_cuboid, cuboidSize, 0);
+
+
     % Define paths to models (ensure these paths are correct)
     woodenFloorModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\infrastructure\floors\5mX5m wooden floor.ttm';
-    chairModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\chairs\dining chair.ttm';
-    tableModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\tables\diningTable.ttm';
-    plantModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\plants\indoorPlant.ttm';
     robotModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\mobile\pioneer p3dx.ttm';%change robot if required?
     laserScannerModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\components\sensors\Hokuyo URG 04LX UG01.ttm'; % Path to 2D laser scanner model
     laserScannerScriptPath = 'C:\Users\tayla\Documents\MATLAB\CSCK505_ROBOTICS2\TestOcc\robotic-system-1\robotic-system\HokuyaScript.txt';
@@ -76,14 +84,12 @@ function Connect_CreateWall
     createWall(sim, [0, 1.5], [1.5, 1.5], wallThickness, wallHeight); % Horizontal right
     createWall(sim, [3.5, 2.5], [3.5, 1.5], wallThickness, wallHeight); % Short vertical top-right
 
-    % Place furniture in the middle of rooms and central corners of the labyrinth
-    placeObject(sim, tableModelPath, [4, -1.5, 0.4], [0, -pi/2, 0]); % Bottom-right room (rotate around y-axis)
-    placeObject(sim, chairModelPath, [4, -0.5, 0.4], [0, 0, 0]); % Bottom-right room chair 1
-    placeObject(sim, chairModelPath, [3, -1.5, 0.4], [0, 0, pi/2]); % Bottom-right room chair 2
-    placeObject(sim, plantModelPath, [-0.5, 1, 0.2], [0, 0, 0]); % Top-left room
-    placeObject(sim, plantModelPath, [-4.5, 2, 0.2], [0, 0, 0]); % Top-left room
-    placeObject(sim, plantModelPath, [-4.5, -2, 0.2], [0, 0, 0]); % Bottom-left room
-    placeObject(sim, plantModelPath, [0.5, 1, 0.2], [0, 0, 0]); % Center-right
+    sim.setObjectPosition(cuboidHandle1, -1, [4, -0.5, 0.4]);
+    sim.setObjectPosition(sphereHandle1, -1, [3, -1.5, 0.4]);
+    sim.setObjectPosition(cuboidHandle2, -1, [-0.5, 1, 0.2]);
+    sim.setObjectPosition(sphereHandle2, -1, [-4.5, 2, 0.2]);
+    sim.setObjectPosition(cuboidHandle3, -1, [-4.5, -2, 0.2]);
+    sim.setObjectPosition(cuboidHandle4, -1, [0.5, 1, 0.2]);
 
     % Function to add a laser scanner to a robot
     function addLaserScanner(sim, robotHandle, laserScannerModelPath)
