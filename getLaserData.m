@@ -2,6 +2,7 @@ function laserData = getLaserData(sim)
     packedData = sim.getStringSignal('laserData');
     if isempty(packedData)
         laserData = [];
+        return;
     else
         laserData = sim.unpackFloatTable(packedData);
         if iscell(laserData)

@@ -1,13 +1,13 @@
 function Connect_CreateWall
     % Initialise the zmqRemoteApi MATLAB client
-    addpath('C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\programming\zmqRemoteApi\clients\matlab');
+    addpath('/Applications/coppeliaSim.app/Contents/Resources/programming/zmqRemoteApi/clients/matlab');
     client = RemoteAPIClient();
 
     % Initialize without parameters
     sim = client.getObject('sim');
 
     % Global variables to store motor handles and client
-    global motorLeftHandle motorRightHandle simClient isStreaming
+    global motorLeftHandle motorRightHandle simClient
 
     sphereSize = 0.6; % Radius of the sphere
     cuboidSize = [0.5, 0.6, 0.4]; % Dimensions of the cuboid [length, width, height]
@@ -20,10 +20,11 @@ function Connect_CreateWall
 
 
     % Define paths to models (ensure these paths are correct)
-    woodenFloorModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\infrastructure\floors\5mX5m wooden floor.ttm';
-    robotModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\mobile\pioneer p3dx.ttm';%change robot if required?
-    laserScannerModelPath = 'C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\components\sensors\Hokuyo URG 04LX UG01.ttm'; % Path to 2D laser scanner model
-    laserScannerScriptPath = 'C:\Users\tayla\Documents\MATLAB\CSCK505_ROBOTICS2\TestOcc\robotic-system-1\robotic-system\HokuyaScript.txt';
+    woodenFloorModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/infrastructure/floors/5mX5m wooden floor.ttm';
+    laserScannerModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/components/sensors/Hokuyo URG 04LX UG01.ttm';
+    laserScannerScriptPath = '/Users/ismaildogan/VsCodeProjects/robotic-system/scripts/HokuyaScript.txt';
+    robotModelPath = '/Applications/coppeliaSim.app/Contents/Resources/models/robots/mobile/pioneer p3dx.ttm';
+    robotModelScriptPath = '/Users/ismaildogan/VsCodeProjects/robotic-system/scripts/PioneerP3dxScript.txt';
 
     % Explicitly remove specific objects by name
     objectsToRemove = {'Floor'}; % Add any other specific objects you want to remove
@@ -102,39 +103,67 @@ function Connect_CreateWall
         sim.setObjectOrientation(laserScannerHandle, robotHandle, [0, 0, 0]);
     end
 
-    function addLaserScannerScript(sim, laserScannerScriptPath)
+    function addLaserScannerScript(sim, pionerp3dxScriptPath)
         % Read the Lua script from the file
-        fid = fopen(laserScannerScriptPath, 'r');
+        fid = fopen(pionerp3dxScriptPath, 'r');
         if fid == -1
-            error('Could not open Lua script file: %s', laserScannerScriptPath);
+            error('Could not open Lua script file: %s', pionerp3dxScriptPath);
         end
         luaScript = fread(fid, '*char')';
         fclose(fid);
     
         % Get the handle of the laser scanner child object
-        laserScannerHandle = sim.getObject('./Hokuyo');
+        pioneerp3dxHandler = sim.getObject('./Hokuyo');
     
         % Check if the laser scanner is already associated with a child script
-        existingScriptHandle = sim.getScript(sim.scripttype_childscript, laserScannerHandle);
+        existingScriptHandle = sim.getScript(sim.scripttype_childscript, pioneerp3dxHandler);
         if existingScriptHandle == -1
             % Add the new Lua script to the laser scanner
             scriptHandle = sim.addScript(sim.scripttype_childscript);
             sim.setScriptText(scriptHandle, luaScript);
     
-            % Associate the new script with the laser scanner
-            sim.associateScriptWithObject(scriptHandle, laserScannerHandle);
+            % Associate the new script with the pioneerp3dx
+            sim.associateScriptWithObject(scriptHandle, pioneerp3dxHandler);
             disp('Lua script added to the laser scanner');
         else
             % Update the existing script's text
             sim.setScriptText(existingScriptHandle, luaScript);
-            disp('Existing Lua script updated on the laser scanner');
+            disp('Existing Lua script updated on the pioneerP3dx');
         end
     end
 
+    function addRobotScript(sim, robotModelScriptPath)
+        % Read the Lua script from the file
+        fid = fopen(robotModelScriptPath, 'r');
+        if fid == -1
+            error('Could not open Lua script file: %s', robotModelScriptPath);
+        end
+        
+        luaScript = fread(fid, '*char')';
+        fclose(fid);
+    
+        % Get the handle of the robot child object
+        robotModelHandler = sim.getObject('./PioneerP3DX');
+    
+        % Check if the robot is already associated with a child script
+        existingScriptHandle = sim.getScript(sim.scripttype_childscript, robotModelHandler);
+        if existingScriptHandle == -1
+            % Add the new Lua script to the robot
+            scriptHandle = sim.addScript(sim.scripttype_childscript);
+            sim.setScriptText(scriptHandle, luaScript);
+    
+            % Associate the new script with the robot
+            sim.associateScriptWithObject(scriptHandle, robotModelHandler);
+            disp('Lua script added to the robot');
+        else
+            % Update the existing script's text
+            sim.setScriptText(existingScriptHandle, luaScript);
+            disp('Existing Lua script updated on the robot');
+        end
+    end
 
     % Place the robot in the environment
     robotHandle = placeObject(sim, robotModelPath, [0, 0, 0.22], [0, 0, 0]);
-
 
     % Get handles for the robot's motors
     motorLeftHandle = sim.getObject('./leftMotor');
@@ -146,8 +175,11 @@ function Connect_CreateWall
     % Add a laser scanner to the robot
     addLaserScanner(sim, robotHandle, laserScannerModelPath);
     
-											 
-    addLaserScannerScript(sim, laserScannerScriptPath)
+	% Add a laser scanner script										 
+    addLaserScannerScript(sim, laserScannerScriptPath);
+
+    % Add a robot model script										 
+    addRobotScript(sim, robotModelScriptPath);
 
     disp('Environment created in CoppeliaSim. You can now interact with it in the CoppeliaSim window.');
 end

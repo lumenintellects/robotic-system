@@ -150,10 +150,11 @@ function pushbutton_exploration_auto_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_exploration_auto (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    main()
+    main_autonomous()
 
 % --- Executes on button press in pushbutton_exploration_manual.
 function pushbutton_exploration_manual_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_exploration_manual (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+    main_manual()

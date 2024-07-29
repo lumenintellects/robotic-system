@@ -1,6 +1,6 @@
-function main    
+function main_autonomous    
     % Add path to the zmqRemoteApi MATLAB client
-    addpath('C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\programming\zmqRemoteApi\clients\matlab');
+    addpath('/Applications/coppeliaSim.app/Contents/Resources/programming/zmqRemoteApi/clients/matlab');
     client = RemoteAPIClient();
     
     % Initialize without parameters
@@ -28,18 +28,23 @@ function main
     l_free = log(p_free / (1 - p_free));
     l_prior = log(0.5 / (1 - 0.5));
     
+     % Set control mode to auto
+    sim.setStringSignal('controlMode', 'auto');
+
     % Start simulation
     sim.startSimulation();
     
     % Set the timer
     startTime = tic;
-    
-    % Fetch and process laser data in a loop
+
     figure;
-    while true
+
+    % Fetch and process laser data in a loop
+    while sim.getSimulationState() ~= sim.simulation_stopped
         % Get laser data
         laserData = getLaserData(sim);
         
+        disp('Waiting for user input');
         if isempty(laserData)
             continue; % Skip if no data
         end
